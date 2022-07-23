@@ -107,10 +107,18 @@ plt.show() """
 #Kod 3.21 Modeli en baştan eğitmek
 #Yukarıdaki kodlarla oluşturulan grafikler ağın 9. epoktan sonra aşırı öğrendiğini göstermektedir.
 #Şimdi ağı en baştan 9 epok eğitip test veri seti üzerinde değerlendirelim.
+
+#hidden_layer=64
+output_layer=46
+
+#hidden layer sayısını 4' e indirelim.
+hidden_layer=4
+
+
 model=models.Sequential()
 model.add(layers.Dense(64,activation='relu',input_shape=(10000,)))
-model.add(layers.Dense(64,activation='relu'))
-model.add(layers.Dense(46,activation='softmax'))
+model.add(layers.Dense(hidden_layer,activation='relu'))
+model.add(layers.Dense(output_layer,activation='softmax'))
 model.compile(optimizer='rmsprop',
              loss='categorical_crossentropy',
              metrics=['accuracy'])
