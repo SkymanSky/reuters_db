@@ -1,3 +1,4 @@
+from cProfile import label
 from keras.datasets import reuters
 import numpy as np
 
@@ -41,5 +42,47 @@ from keras.utils.np_utils import to_categorical
 one_hot_train_labels=to_categorical(train_labels)
 one_hot_test_labels=to_categorical(test_labels)
 
-print(one_hot_test_labels[0])
+#Kod 3.15 Model Tanımlama
+from keras import models
+from keras import layers
 
+model=models.Sequential()
+model.add(layers.Dense(64,activation='relu',input_shape=(10000,)))
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(46,activation='softmax'))
+
+#Kod 3.16 Modeli derlemek
+model.compile(optimizer='rmsprop',
+            loss='categorical_crossentropy',
+            metrics=['accuracy'])
+
+#Kod 3.17 Doğrulama veri seti oluşturmak
+x_val=x_train[:1000]
+partial_x_train=x_train[1000:]
+
+y_val=one_hot_train_labels[:1000]
+partial_y_train=one_hot_train_labels[1000:]
+
+#3.18 Modeli Eğitmek
+history=model.fit(partial_x_train,
+                  partial_y_train,
+                  epochs=20,
+                  batch_size=512,
+                  validation_data=(x_val,y_val))
+
+#Kod 3.19 Eğitim ve Doğrulama kayıplarını çizdirmek
+import matplotlib.pyplot as plt
+
+loss=history.history['loss']
+val_loss=history.history['val_loss']
+
+epochs=range(1,len(loss)+1)
+
+plt.plot(epochs,loss,'bo',label='Eğitim Kaybı')
+plt.plot(epochs,val_loss,'b',label='Doğrulama Kaybı')
+plt.title('Eğitim ve Doğrulama Kaybı')
+plt.xlabel='Epoklar'
+plt.ylabel='Kayıp'
+plt.legend()
+
+plt.show()
