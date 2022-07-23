@@ -118,6 +118,10 @@ hidden_layer=4
 main_hidden_layer=32
 hidden_layer=32
 
+#Katmanları 128 e çıkaralım.
+main_hidden_layer=128
+hidden_layer=128
+
 model=models.Sequential()
 model.add(layers.Dense(main_hidden_layer,activation='relu',input_shape=(10000,)))
 model.add(layers.Dense(hidden_layer,activation='relu'))
