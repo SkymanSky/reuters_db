@@ -1,5 +1,3 @@
-from cProfile import label
-from pickletools import optimize
 from keras.datasets import reuters
 import numpy as np
 from keras import models
