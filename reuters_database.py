@@ -114,9 +114,12 @@ output_layer=46
 #hidden layer sayısını 4' e indirelim.
 hidden_layer=4
 
+#Katmanları 32 ye düşürelim.
+main_hidden_layer=32
+hidden_layer=32
 
 model=models.Sequential()
-model.add(layers.Dense(64,activation='relu',input_shape=(10000,)))
+model.add(layers.Dense(main_hidden_layer,activation='relu',input_shape=(10000,)))
 model.add(layers.Dense(hidden_layer,activation='relu'))
 model.add(layers.Dense(output_layer,activation='softmax'))
 model.compile(optimizer='rmsprop',
