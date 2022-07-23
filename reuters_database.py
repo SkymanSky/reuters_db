@@ -1,6 +1,9 @@
 from cProfile import label
+from pickletools import optimize
 from keras.datasets import reuters
 import numpy as np
+from keras import models
+from keras import layers
 
 (train_data,train_labels),(test_data,test_labels)=reuters.load_data(num_words=10000)
 #num_words verilerin en sık karşılaşılan 10.000 kelime ile sınırlı olmasını sağlar.
@@ -42,9 +45,8 @@ from keras.utils.np_utils import to_categorical
 one_hot_train_labels=to_categorical(train_labels)
 one_hot_test_labels=to_categorical(test_labels)
 
-#Kod 3.15 Model Tanımlama
-from keras import models
-from keras import layers
+""" #Kod 3.15 Model Tanımlama
+
 
 model=models.Sequential()
 model.add(layers.Dense(64,activation='relu',input_shape=(10000,)))
@@ -54,7 +56,7 @@ model.add(layers.Dense(46,activation='softmax'))
 #Kod 3.16 Modeli derlemek
 model.compile(optimizer='rmsprop',
             loss='categorical_crossentropy',
-            metrics=['accuracy'])
+            metrics=['accuracy'])"""
 
 #Kod 3.17 Doğrulama veri seti oluşturmak
 x_val=x_train[:1000]
@@ -63,12 +65,14 @@ partial_x_train=x_train[1000:]
 y_val=one_hot_train_labels[:1000]
 partial_y_train=one_hot_train_labels[1000:]
 
+"""
 #3.18 Modeli Eğitmek
 history=model.fit(partial_x_train,
                   partial_y_train,
                   epochs=20,
                   batch_size=512,
                   validation_data=(x_val,y_val))
+
 
 #Kod 3.19 Eğitim ve Doğrulama kayıplarını çizdirmek
 import matplotlib.pyplot as plt
@@ -86,3 +90,46 @@ plt.ylabel='Kayıp'
 plt.legend()
 
 plt.show()
+
+#Kod 3.20 Eğitim ve Doğrulama Başarımını Çizdirmek
+plt.clf
+
+acc=history.history['accuracy']
+val_acc=history.history['val_accuracy']
+
+plt.plot(epochs,acc,'bo',label='Training accuracy')
+plt.plot(epochs,val_acc,'b',label='Validation accuracy')
+plt.title('Training and Validation Accuracy')
+plt.xlabel='Epochs'
+plt.ylabel='Accuracy'
+plt.legend()
+
+plt.show() """
+
+#Kod 3.21 Modeli en baştan eğitmek
+#Yukarıdaki kodlarla oluşturulan grafikler ağın 9. epoktan sonra aşırı öğrendiğini göstermektedir.
+#Şimdi ağı en baştan 9 epok eğitip test veri seti üzerinde değerlendirelim.
+model=models.Sequential()
+model.add(layers.Dense(64,activation='relu',input_shape=(10000,)))
+model.add(layers.Dense(64,activation='relu'))
+model.add(layers.Dense(46,activation='softmax'))
+model.compile(optimizer='rmsprop',
+             loss='categorical_crossentropy',
+             metrics=['accuracy'])
+model.fit(partial_x_train,
+          partial_y_train,
+          epochs=9,
+          batch_size=512,
+          validation_data=(x_val,y_val))
+
+results=model.evaluate(x_test,one_hot_test_labels)
+
+print(f"Results: {results}")
+
+#Rastgele yaklaşımda 46 kategoriye ayırma başarımı
+import copy
+test_labels_copy=copy.copy(test_labels)
+np.random.shuffle(test_labels_copy)
+hits_array=np.array(test_labels) == np.array(test_labels_copy)
+accuracy_percentage=float(np.sum(hits_array)) / len(test_labels)
+print(f"Accuracy percentage fıor randomized data: {accuracy_percentage}")
