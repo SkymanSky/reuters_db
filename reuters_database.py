@@ -119,8 +119,9 @@ main_hidden_layer=32
 hidden_layer=32
 
 #Katmanları 128 e çıkaralım.
-main_hidden_layer=128
-hidden_layer=128
+main_hidden_layer=64
+hidden_layer=64
+output_layer=46
 
 model=models.Sequential()
 model.add(layers.Dense(main_hidden_layer,activation='relu',input_shape=(10000,)))
@@ -146,3 +147,12 @@ np.random.shuffle(test_labels_copy)
 hits_array=np.array(test_labels) == np.array(test_labels_copy)
 accuracy_percentage=float(np.sum(hits_array)) / len(test_labels)
 print(f"Accuracy percentage fıor randomized data: {accuracy_percentage}")
+
+#Kod 3.22 Yeni Veriler için Tahmin Oluşturma
+predictions=model.predict(x_test)
+print(predictions[0].shape)
+print(np.sum(predictions[0]))
+print(np.argmax(predictions[0]))
+
+
+
